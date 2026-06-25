@@ -39,4 +39,15 @@ public interface ShopBlockConfig extends Config
 	{
 		return true;
 	}
+
+	@ConfigItem(
+		keyName = "exceptions",
+		name = "Exceptions",
+		description = "Item names to allow selling, one per line. Use * as a wildcard, for example *whip",
+		position = 4
+	)
+	default String exceptions()
+	{
+		return "";
+	}
 }

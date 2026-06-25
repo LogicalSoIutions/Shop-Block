@@ -55,6 +55,13 @@ public class ShopBlockPlugin extends Plugin
 			return;
 		}
 
+		String itemName = Text.removeTags(event.getMenuTarget()).trim();
+		if (isItemExcepted(itemName, config.exceptions()))
+		{
+			log.debug("Allowed sale of excepted item {}", itemName);
+			return;
+		}
+
 		int value = getItemValue(itemId);
 		if (value >= config.valueThreshold())
 		{
@@ -63,7 +70,6 @@ public class ShopBlockPlugin extends Plugin
 
 			if (config.showWarning())
 			{
-				String itemName = Text.removeTags(event.getMenuTarget());
 				client.addChatMessage(
 					ChatMessageType.GAMEMESSAGE,
 					"",
@@ -72,6 +78,67 @@ public class ShopBlockPlugin extends Plugin
 				);
 			}
 		}
+	}
+
+	static boolean isItemExcepted(String itemName, String exceptions)
+	{
+		if (itemName == null || exceptions == null || exceptions.trim().isEmpty())
+		{
+			return false;
+		}
+
+		String normalizedItemName = normalizeItemName(itemName);
+		for (String exception : exceptions.split("[\\r\\n,]+"))
+		{
+			String normalizedException = normalizeItemName(exception);
+			if (normalizedException.isEmpty())
+			{
+				continue;
+			}
+
+			if (matchesException(normalizedItemName, normalizedException))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static boolean matchesException(String itemName, String exception)
+	{
+		int wildcardIndex = exception.indexOf('*');
+		if (wildcardIndex == -1)
+		{
+			return itemName.equals(exception);
+		}
+
+		int itemNameIndex = 0;
+		boolean anchoredAtStart = wildcardIndex != 0;
+		boolean anchoredAtEnd = exception.charAt(exception.length() - 1) != '*';
+
+		for (String part : exception.split("\\*", -1))
+		{
+			if (part.isEmpty())
+			{
+				continue;
+			}
+
+			int matchIndex = itemName.indexOf(part, itemNameIndex);
+			if (matchIndex == -1 || anchoredAtStart && itemNameIndex == 0 && matchIndex != 0)
+			{
+				return false;
+			}
+
+			itemNameIndex = matchIndex + part.length();
+		}
+
+		return !anchoredAtEnd || itemNameIndex == itemName.length();
+	}
+
+	private static String normalizeItemName(String itemName)
+	{
+		return itemName.trim().replaceAll("\\s+", " ").toLowerCase();
 	}
 
 	private int getItemValue(int itemId)

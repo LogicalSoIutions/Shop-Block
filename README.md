@@ -15,6 +15,7 @@ Shop Block prevents accidentally selling valuable items to NPC shops.
 - **Value Threshold**: minimum value (in GP) that triggers blocking
 - **Price Type**: GE Price or HA Value
 - **Show Warning**: show a chat message for blocked sells
+- **Exceptions**: item names that can still be sold, one per line. Use `*` as a wildcard, for example `*whip`
 
 ## Development
 
