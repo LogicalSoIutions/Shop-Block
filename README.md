@@ -19,6 +19,9 @@ Shop Block prevents accidentally selling valuable items to NPC shops.
 
 ## Development
 
+The plugin builds against RuneLite 1.13.1. The client and development launcher
+share the `runeLiteVersion` declared in `build.gradle`.
+
 Run from the plugin root:
 
 ```powershell

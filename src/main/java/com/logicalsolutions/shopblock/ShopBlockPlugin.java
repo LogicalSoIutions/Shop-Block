@@ -62,7 +62,7 @@ public class ShopBlockPlugin extends Plugin
 			return;
 		}
 
-		int value = getItemValue(itemId);
+		long value = getItemValue(itemId);
 		if (value >= config.valueThreshold())
 		{
 			event.consume();
@@ -141,7 +141,7 @@ public class ShopBlockPlugin extends Plugin
 		return itemName.trim().replaceAll("\\s+", " ").toLowerCase();
 	}
 
-	private int getItemValue(int itemId)
+	private long getItemValue(int itemId)
 	{
 		if (config.priceType() == PriceType.GE_PRICE)
 		{
@@ -150,7 +150,7 @@ public class ShopBlockPlugin extends Plugin
 		return client.getItemDefinition(itemId).getHaPrice();
 	}
 
-	private String formatValue(int value)
+	private String formatValue(long value)
 	{
 		if (value >= 1_000_000)
 		{
